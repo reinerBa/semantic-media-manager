@@ -4,7 +4,7 @@
       <ul v-if="files.length">
         <li v-for="(file, index) in files" :key="file.id">
           <span>{{file.name}}</span> -
-          <span>{{file.size }}</span> -
+          <span>{{file.size }}</span> {{index}}
           <span v-if="file.error">{{file.error}}</span>
           <span v-else-if="file.success">success</span>
           <span v-else-if="file.active">active</span>
