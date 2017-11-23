@@ -1,5 +1,11 @@
 <template>
   <div id="app">
+  <div id="hint">
+    +++
+  </div>
+    <div id="navList">
+        navi
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -10,6 +16,8 @@
   }
 </script>
 
-<style>
-  /* CSS */
+<style lang="stylus">
+#navList
+  display none
+
 </style>

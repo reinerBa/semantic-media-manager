@@ -6,38 +6,81 @@
         <span class="title">
           Welcome to your new project!
         </span>
-        <system-information></system-information>
+        <ul>
+  <li v-for="file in files">{{file.name}} - Error: {{file.error}}, Success: {{file.success}}</li>
+</ul>
+        <file-upload
+        :directory="true" :multiple="true"
+        :drop="true"
+        :drop-directory="true"
+          ref="upload"
+          v-model="files"
+          post-action="/post.method"
+          put-action="/put.method"
+          @input-file="inputFile"
+          @input-filter="inputFilter"
+        >
+        Upload file
+        </file-upload>
       </div>
-
-      <div class="right-side">
-        <div class="doc">
-          <div class="title">Getting Started</div>
-          <p>
-            electron-vue comes packed with detailed documentation that covers everything from
-            internal configurations, using the project structure, building your application,
-            and so much more.
-          </p>
-          <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
-        </div>
-        <div class="doc">
-          <div class="title alt">Other Documentation</div>
-          <button class="alt" @click="open('https://electron.atom.io/docs/')">Electron</button>
-          <button class="alt" @click="open('https://vuejs.org/v2/guide/')">Vue.js</button>
-        </div>
-      </div>
+      <h2>next</h2>
+      <add-zone></add-zone>
     </main>
   </div>
 </template>
 
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
-
+  import addZone from './AddZone'
   export default {
     name: 'landing-page',
-    components: { SystemInformation },
+    data: function () {
+      return {
+        files: []
+      }
+    },
+    components: { SystemInformation, addZone },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
+      },
+      /**
+       * Has changed
+       * @param  Object|undefined   newFile   Read only
+       * @param  Object|undefined   oldFile   Read only
+       * @return undefined
+       */
+      inputFile: function (newFile, oldFile) {
+        if (newFile && oldFile && !newFile.active && oldFile.active) {
+          // Get response data
+          console.log('response', newFile.response)
+          if (newFile.xhr) {
+            //  Get the response status code
+            console.log('status', newFile.xhr.status)
+          }
+        }
+      },
+      /**
+       * Pretreatment
+       * @param  Object|undefined   newFile   Read and write
+       * @param  Object|undefined   oldFile   Read only
+       * @param  Function           prevent   Prevent changing
+       * @return undefined
+       */
+      inputFilter: function (newFile, oldFile, prevent) {
+        if (newFile && !oldFile) {
+          // Filter non-image file
+          if (!/\.(jpeg|jpe|jpg|gif|png|webp)$/i.test(newFile.name)) {
+            return prevent()
+          }
+        }
+
+        // Create a blob field
+        newFile.blob = ''
+        let URL = window.URL || window.webkitURL
+        if (URL && URL.createObjectURL) {
+          newFile.blob = URL.createObjectURL(newFile.file)
+        }
       }
     }
   }
