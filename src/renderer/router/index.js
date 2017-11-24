@@ -10,7 +10,11 @@ export default new Router({
       name: 'add-files',
       component: require('@/components/AddZone').default
     },
-
+    {
+      path: '/simple',
+      name: 'simple-drag',
+      component: require('@/components/simpleDrag').default
+    },
     {
       path: '/',
       name: 'landing-page',

@@ -4,12 +4,15 @@
       <ul v-if="files.length">
         <li v-for="(file, index) in files" :key="file.id">
           <span>{{file.name}}</span> -
-          <span>{{file.size }}</span> {{index}}
+          <span>{{file.size }}</span> {{index}} {{file.thumb}}
           <span v-if="file.error">{{file.error}}</span>
           <span v-else-if="file.success">success</span>
           <span v-else-if="file.active">active</span>
           <span v-else-if="file.active">active</span>
           <span v-else></span>
+          <img v-if="file.thumb" :src="file.thumb" width="40" height="auto" />
+          <span v-else>No Image</span>
+          {{file}}
         </li>
       </ul>
       <ul v-else>
@@ -32,6 +35,7 @@
           :multiple="true"
           :drop="true"
           :drop-directory="true"
+          @input-filter="inputFilter"
           v-model="files"
           ref="upload">
           <i class="fa fa-plus"></i>
@@ -60,6 +64,38 @@ export default {
   data () {
     return {
       files: []
+    }
+  },
+  methods: {
+    inputFilter (newFile, oldFile, prevent) {
+      if (newFile && !oldFile) {
+        // Before adding a file
+
+        // Filter system files or hide files
+        if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
+          return prevent()
+        }
+
+        // Filter php html js file
+        if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
+          return prevent()
+        }
+      }
+
+      if (newFile && (!oldFile || newFile.file !== oldFile.file)) {
+        // Create a blob field
+        newFile.blob = ''
+        let URL = window.URL || window.webkitURL
+        if (URL && URL.createObjectURL) {
+          newFile.blob = URL.createObjectURL(newFile.file)
+        }
+
+        // Thumbnails
+        newFile.thumb = ''
+        if (newFile.blob && newFile.type.substr(0, 6) === 'image/') {
+          newFile.thumb = newFile.blob
+        }
+      }
     }
   }
 }
