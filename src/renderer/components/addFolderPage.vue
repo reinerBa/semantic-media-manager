@@ -1,8 +1,8 @@
 <template>
 <div>
-  <div ref="dragArea">
-<h1>Drag here</h1>
-  </div>
+  <drag-area drop-callback="parseInputFile">
+    <h1>Drag here</h1>
+  </drag-area>
   <div ref="listArea">
     <ul>
       <li v-for="file in files">
@@ -15,22 +15,12 @@
 </template>
 
 <script>
+import dragArea from 'dragArea'
 import fs from 'fs-extra'
 
 export default {
-  mounted () {
-    this.$nextTick(() => {
-      this.$refs.dragArea.ondragover = this.$refs.dragArea.ondrop = (ev) => {
-        ev.preventDefault()
-      }
-
-      this.$refs.dragArea.ondrop = (ev) => {
-        for (let file of ev.dataTransfer.files) this.parseInputFile(file)
-
-        console.log(ev.dataTransfer.files[0].path)
-        ev.preventDefault()
-      }
-    })
+  components{
+    dragArea
   },
   data () {
     return {

@@ -32,11 +32,13 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
   import addZone from './AddZone'
+  import settingsObj from './LandingPage/SettingsStore'
   export default {
     name: 'landing-page',
     data: function () {
       return {
-        files: []
+        files: [],
+        settings: settingsObj
       }
     },
     components: { SystemInformation, addZone },

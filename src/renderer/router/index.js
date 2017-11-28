@@ -6,6 +6,16 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '/filemanager',
+      name: 'Datei Manager',
+      component: require('@/components/FileManager').default
+    },
+    {
+      path: '/Settings',
+      name: 'Einstellungen',
+      component: require('@/components/SettingsPage').default
+    },
+    {
       path: '/Add',
       name: 'add-files',
       component: require('@/components/AddZone').default
