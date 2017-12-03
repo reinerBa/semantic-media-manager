@@ -7,14 +7,14 @@
 
 <script>
 export default {
-  props:{
-    "debug":{
+  props: {
+    'debug': {
       type: Boolean,
       default: false
     },
-    "drop-callback":{
+    'drop-callback': {
       required: true,
-      type: Function,
+      type: Function
     }
   },
   mounted () {
@@ -24,8 +24,8 @@ export default {
   },
   methods: {
     propagate (ev) {
-      if(this.debug) console.log(ev.dataTransfer.files[0].path)
-      this["drop-callback"](ev.dataTransfer.files)
+      if (this.debug) console.log(ev.dataTransfer.files[0].path)
+      this['drop-callback'](ev.dataTransfer.files)
       this.prevent()
     }
   }

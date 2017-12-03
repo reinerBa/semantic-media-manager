@@ -19,7 +19,7 @@ import dragArea from 'dragArea'
 import fs from 'fs-extra'
 
 export default {
-  components{
+  components: {
     dragArea
   },
   data () {

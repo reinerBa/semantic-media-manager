@@ -7,7 +7,8 @@
       <input type="text" v-model="file" /><button @click="dirSet('', file)">Ok</button>
     </p>
     <div class="block">
-      <h1>Enthaltene Daten</h1> <button @click="dirUp">Up</button> {{baseDir}}
+      <h1>Enthaltene Daten  <span v-show="childs.length > 3">({{childs.length}})</span></h1>
+      <button @click="dirUp">Up</button> {{baseDir}}
       <div class="fluidBox">
         <div class="fluid" v-for="(c, idx) in childs">
           <img v-if="c.isImage" :src="c.path" width="80px" height="auto" />
@@ -47,7 +48,7 @@ export default {
       this.baseDir.push(this.file)
       let ch = await fs.readdir(this.file)
       for (let path of ch) {
-        let chx = new FilePack(this.file + '\\' + path, path)
+        let chx = new FilePack(this.file + '\\' + path, path, this.file)
         await chx.parseFile()
         this.childs.push(chx)
       }
