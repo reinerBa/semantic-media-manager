@@ -22,8 +22,10 @@ class FilePack {
     let vidRegex = /mp4|avi|flv/gi
     this.isVideo = vidRegex.test(this.format)
 
-    let readStream = fs.createReadStream(this.path)
-    if (!this.isDir) this.contentHash = await hasha.fromStream(readStream, {algorithm: 'md5'})
+    if (!this.isDir) {
+      let readStream = fs.createReadStream(this.path)
+      this.contentHash = await hasha.fromStream(readStream, {algorithm: 'md5'})
+    }
   }
 }
 

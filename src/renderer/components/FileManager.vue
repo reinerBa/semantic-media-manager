@@ -10,7 +10,7 @@
       <h1>Enthaltene Daten  <span v-show="childs.length > 3">({{childs.length}})</span></h1>
       <button @click="dirUp">Up</button> {{baseDir}}
       <div class="fluidBox">
-        <div class="fluid" v-for="(c, idx) in childs">
+        <div @click="zoom(c)" class="fluid mediaBox" v-for="(c, idx) in childs">
           <img v-if="c.isImage" :src="c.path" width="80px" height="auto" />
           <img v-else-if="c.isDir" @click="openFolder(c.path)" src="~@/assets/blue-folder.svg" width="160px" height="auto" />
           <video v-else-if="c.isVideo" width="320" controls>
@@ -20,22 +20,44 @@
         </div>
       </div>
     </div>
+    <dynamic-modal v-if="modal.show" @close="modal.show=false;">
+      <img slot="body" :src="modal.c.path" class="preview"/>
+    </dynamic-modal>
   </div>
 </template>
 
 <script>
 import fs from 'fs-extra'
 import FilePack from './LandingPage/FileContainers'
+import DynamicModal from './DynamicModal'
 export default {
   name: 'file-manager',
   data: function () {
     return {
       file: '',
       childs: [],
-      baseDir: []
+      baseDir: [],
+      siteWidth: 2,
+      modal: {show: true, c: {}}
+    }
+  },
+  computed: {
+    inColumn () {
+      let columnNr = Array(this.siteWidth).fill([])
+      /* let cnt = -1
+      debugger
+      for (let ch of this.childs) columnNr[++cnt % this.siteWidth].push(ch)
+      this.childs.forEach((element, index) => {
+        columnNr[index % this.siteWidth].push(element)
+      }) */
+      return columnNr
     }
   },
   methods: {
+    zoom (node) {
+      this.modal.c = node
+      this.modal.show = true
+    },
     async dirUp () {
       this.baseDir.pop()
       await this.dirSet('', this.baseDir.pop())
@@ -57,17 +79,32 @@ export default {
       this.file = path
       await this.dirSet('', path)
     }
+  },
+  mounted () {
+    this.siteWidth = Math.ceil(document.body.offsetWidth / 500)
+  },
+  components: {
+    DynamicModal
   }
 }
 </script>
 
 <style scoped="">
+.preview{
+  max-width: 100%;
+}
+.fluid.mediaBox img{
+  width: 100%
+}
+.mediaBox{
+  width: 33%;
+  max-width: 33%;
+}
 .fluidBox{
   display: flex;
   flex-wrap: wrap;
 }
 .fluid{
-  max-width: 25%;
   text-align: center;
   padding: 0.5rem;
 }
